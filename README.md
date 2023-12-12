@@ -31,24 +31,31 @@ The server will start running at `http://127.0.0.1:8000/`. You can access the AP
 - {stat}: The stat to sort by (case-insensitive). This is a required parameter.
 - Example: curl 'http://127.0.0.1:8000/api/Lakers/pts'
 
-3. /api/schedule: Returns the game results for a specified team for a given season. You can specify any season in the format YYYY-YY. If no season is specified, the default season is the latest season (2023-24).
-- team: The team's full name, abbreviation, or nickname (case-insensitive). This is a required parameter.
-- season: The season in the format YYYY-YY. This is an optional parameter.
-- Example: curl 'http://127.0.0.1:8000/api/schedule?team=Lakers&season=2022-23'
+3. /api/schedule: Returns the game schedule for a specified date. If no date is specified, the default date is 2023-12-11.
+- date: The date in the format YYYY-MM-DD. This is an optional parameter.
+- Example: curl 'http://127.0.0.1:8000/api/schedule?date=2023-12-11'
 
-4. /api/fantasyStats: Returns the fantasy stats for all players.
+4. /api/boxScore: Returns the box score for all games on a specified date. The default date is 2023-12-11.
+- No parameters required.
+- Example: curl 'http://127.0.0.1:8000/api/boxScore'
+
+5. /api/todaysGames: Returns a list of all NBA games scheduled for the current day. Each game is represented as a string in the format "{gameId}: {awayTeam} vs. {homeTeam} @ {gameTimeLTZ}".
+- No parameters required.
+- Example: curl 'http://127.0.0.1:8000/api/todaysGames'
+
+6. /api/fantasyStats: Returns the fantasy stats for all players.
 - No parameters required.
 - Example: curl 'http://127.0.0.1:8000/api/fantasyStats'
 
-5. /api/watchlist: POST request to add a player to the user's watchlist.
+7. /api/watchlist: POST request to add a player to the user's watchlist.
 - player: The player details in JSON format. This is a required parameter.
 - Example: curl -X POST -d '{"username": "username123", "first_name": "Lebron", "last_name": "James", "team": "Lakers", "player_id": 2544}' http://127.0.0.1:8000/api/watchlist
 
-6. /api/watchlist: GET request to retrieve all players in the user's watchlist.
+8. /api/watchlist: GET request to retrieve all players in the user's watchlist.
 - username: The username of the user. This is a required parameter.
 - Example: curl 'http://127.0.0.1:8000/api/watchlist?username=username123'
 
-7. /api/watchlist: DELETE request to remove a player from the user's watchlist.
+9. /api/watchlist: DELETE request to remove a player from the user's watchlist.
 - player_id: The unique ID of the player. This is a required parameter.
 - username: The username of the user. This is a required parameter.
 - Example: curl -X DELETE 'http://127.0.0.1:8000/api/watchlist?player_id=2544&username=username123'

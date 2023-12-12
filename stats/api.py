@@ -291,18 +291,6 @@ def GetNBASchedule(request, date: Optional[str] = None):
         games['VISITOR_TEAM_NAME'] = games['VISITOR_TEAM_ID'].apply(lambda team_id: teams.find_team_name_by_id(team_id))
         print(games["HOME_TEAM_NAME"])
 
-        # Loop through each game
-        # for game_id in games['GAME_ID']:
-        #     # Use the BoxScoreTraditionalV2 endpoint to get game details
-        #     box_score = boxscoretraditionalv2.BoxScoreTraditionalV2(game_id=game_id)
-        #     game_detail = box_score.get_data_frames()[0]
-
-        #     # Append the game details to the list
-        #     game_details.append(game_detail)
-
-        # # Return the game details
-        # print(game_details)
-
     except Exception as e:
         print("An error occurred:", e)
         raise HttpError(500,"An error occurred.")
