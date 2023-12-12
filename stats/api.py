@@ -4,6 +4,8 @@ from typing import Optional, List
 from ninja import NinjaAPI
 from nba_api.stats.endpoints import leaguegamefinder
 from nba_api.live.nba.endpoints import scoreboard
+from nba_api.stats.endpoints import scoreboardv2
+from nba_api.stats.endpoints import boxscoretraditionalv2
 from nba_api.live.nba.endpoints import boxscore
 from nba_api.stats.endpoints import fantasywidget
 from nba_api.stats.static import teams
@@ -66,7 +68,7 @@ def leadingStatsByTeam(request, team: str, stat: str):
         print("An error occurred:", e)
         raise HttpError(500,"Invalid Query Parameter Passed.")
 
-@api.get("/schedule")
+@api.get("/teamSchedule")
 def GetGameResultsByTeam(request, team: str, season: Optional[str] = None):
     try:
         team = team.lower()
@@ -228,6 +230,82 @@ def GetFantasyStats(request):
     except Exception as e:
         print("An error occurred:", e)
         raise HttpError(500,"Invalid Query Parameter Passed.")
+    
+
+# Index(['GAME_DATE_EST', 'GAME_SEQUENCE', 'GAME_ID', 'GAME_STATUS_ID',
+#        'GAME_STATUS_TEXT', 'GAMECODE', 'HOME_TEAM_ID', 'VISITOR_TEAM_ID',
+#        'SEASON', 'LIVE_PERIOD', 'LIVE_PC_TIME',
+#        'NATL_TV_BROADCASTER_ABBREVIATION', 'HOME_TV_BROADCASTER_ABBREVIATION',
+#        'AWAY_TV_BROADCASTER_ABBREVIATION', 'LIVE_PERIOD_TIME_BCAST',
+#        'ARENA_NAME', 'WH_STATUS', 'WNBA_COMMISSIONER_FLAG'],
+#       dtype='object')
+    
+@api.get("/boxScore")
+def GetNBASchedule(request): 
+    try:
+        # Specify the date you are interested in (YYYY, MM, DD)
+        date = datetime(2023, 12, 11)
+
+        # Use the Scoreboard endpoint to get the games for the specified date
+        sb = scoreboardv2.ScoreboardV2(day_offset='0', game_date=date)
+
+        # The game_header data frame contains the basic information about each game
+        games = sb.game_header.get_data_frame()
+
+        # Create an empty list to store game details
+        game_details = []
+
+        # Loop through each game
+        for game_id in games['GAME_ID']:
+            # Use the BoxScoreTraditionalV2 endpoint to get game details
+            box_score = boxscoretraditionalv2.BoxScoreTraditionalV2(game_id=game_id)
+            game_detail = box_score.get_data_frames()[0]
+
+            # Append the game details to the list
+            game_details.append(game_detail)
+
+        # Return the game details
+        print(game_details)
+
+    except Exception as e:
+        print("An error occurred:", e)
+        raise HttpError(500,"An error occurred.")
+
+@api.get("/schedule")
+def GetNBASchedule(request, date: Optional[str] = None): 
+    try:
+        if(date is None):
+            # Specify the date you are interested in (YYYY, MM, DD)
+            date = datetime(2023, 12, 11)
+        else:
+            date = datetime.strptime(date, '%Y-%m-%d')  
+            print("date: ", date)
+
+        # Use the Scoreboard endpoint to get the games for the specified date
+        sb = scoreboardv2.ScoreboardV2(day_offset='0', game_date=date)
+
+        # The game_header data frame contains the basic information about each game
+        games = sb.game_header.get_data_frame()
+
+        games['HOME_TEAM_NAME'] = games['HOME_TEAM_ID'].apply(lambda team_id: teams.find_team_name_by_id(team_id))
+        games['VISITOR_TEAM_NAME'] = games['VISITOR_TEAM_ID'].apply(lambda team_id: teams.find_team_name_by_id(team_id))
+        print(games["HOME_TEAM_NAME"])
+
+        # Loop through each game
+        # for game_id in games['GAME_ID']:
+        #     # Use the BoxScoreTraditionalV2 endpoint to get game details
+        #     box_score = boxscoretraditionalv2.BoxScoreTraditionalV2(game_id=game_id)
+        #     game_detail = box_score.get_data_frames()[0]
+
+        #     # Append the game details to the list
+        #     game_details.append(game_detail)
+
+        # # Return the game details
+        # print(game_details)
+
+    except Exception as e:
+        print("An error occurred:", e)
+        raise HttpError(500,"An error occurred.")
 
 @api.post("/watchlist", response={201: PlayerSchema})
 def AddPlayerToWishlist(request, player: PlayerSchema):
