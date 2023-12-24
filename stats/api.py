@@ -23,15 +23,37 @@ from datetime import datetime
 from .Models import Player
 from .Services import GetPlayerStats, GetPlayerStatsDf
 import re
+import pandas as pd
+from nba_api.stats.endpoints import boxscoretraditionalv2
+from ninja import Query
 
 api = NinjaAPI()
 
 @api.get("/playerLeadingStats")
-def leadingScorers(request, stat: str = "PTS", season: str = "2023-24"):
+def leadingPlayersGivenStat(request, season: str = "2023-24"):
     try:
         if not re.match(r"\d{4}-\d{2}", season):
             return JsonResponse({'error': 'Invalid season format. It should be YYYY-YY.'}, status=400)
-        return GetPlayerStats(season, stat)
+        return GetPlayerStats(season, "PTS")
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+@api.get("/leadingPlayersForEachStat")
+def leadingPlayersForEachStat(request, stat: str = "PTS", season: str = "2023-24"):
+    try:
+        if not re.match(r"\d{4}-\d{2}", season):
+            return JsonResponse({'error': 'Invalid season format. It should be YYYY-YY.'}, status=400)
+        
+        stats = ["PTS", "REB", "AST", "STL", "BLK", "FG_PCT", "FG3_PCT", "MIN", "TOV"]
+        result = []
+
+        for stat in stats:
+            result.append({
+                'stat': stat,
+                'data': GetPlayerStats(season, stat)
+            })
+
+        return JsonResponse(result, safe=False)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
@@ -239,37 +261,21 @@ def GetFantasyStats(request):
 #        'AWAY_TV_BROADCASTER_ABBREVIATION', 'LIVE_PERIOD_TIME_BCAST',
 #        'ARENA_NAME', 'WH_STATUS', 'WNBA_COMMISSIONER_FLAG'],
 #       dtype='object')
-    
+
 @api.get("/boxScore")
-def GetNBASchedule(request): 
+def GetBoxScore(request, gameId: str): 
     try:
-        # Specify the date you are interested in (YYYY, MM, DD)
-        date = datetime(2023, 12, 11)
-
-        # Use the Scoreboard endpoint to get the games for the specified date
-        sb = scoreboardv2.ScoreboardV2(day_offset='0', game_date=date)
-
-        # The game_header data frame contains the basic information about each game
-        games = sb.game_header.get_data_frame()
-
-        # Create an empty list to store game details
-        game_details = []
-
-        # Loop through each game
-        for game_id in games['GAME_ID']:
-            # Use the BoxScoreTraditionalV2 endpoint to get game details
-            box_score = boxscoretraditionalv2.BoxScoreTraditionalV2(game_id=game_id)
-            game_detail = box_score.get_data_frames()[0]
-
-            # Append the game details to the list
-            game_details.append(game_detail)
+        # Use the BoxScoreTraditionalV2 endpoint to get game details
+        box_score = boxscoretraditionalv2.BoxScoreTraditionalV2(game_id=gameId)
+        game_detail = box_score.get_data_frames()[0]
+        print(game_detail)
 
         # Return the game details
-        print(game_details)
+        return game_detail.to_json(orient='records')
 
     except Exception as e:
         print("An error occurred:", e)
-        raise HttpError(500,"An error occurred.")
+        raise HttpError(500,"Invalid Query Parameter Passed.")
 
 @api.get("/schedule")
 def GetNBASchedule(request, date: Optional[str] = None): 
@@ -289,7 +295,10 @@ def GetNBASchedule(request, date: Optional[str] = None):
 
         games['HOME_TEAM_NAME'] = games['HOME_TEAM_ID'].apply(lambda team_id: teams.find_team_name_by_id(team_id))
         games['VISITOR_TEAM_NAME'] = games['VISITOR_TEAM_ID'].apply(lambda team_id: teams.find_team_name_by_id(team_id))
-        print(games["HOME_TEAM_NAME"])
+        
+        with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
+            print(games) 
+        return games.to_json(orient='records')
 
     except Exception as e:
         print("An error occurred:", e)

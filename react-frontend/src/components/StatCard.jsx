@@ -13,8 +13,8 @@ import { Link } from "react-router-dom"
 import { useDispatch } from "react-redux";
 import { setPlayerDataStore, setPlayerDataError } from "../redux/playerDataSlice";
 
-const StatCard = ({ stat }) => {
-    const [playerData, setPlayerData] = useState([]);
+const StatCard = ({ stat, playerData }) => {
+    // const [playerData, setPlayerData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     // const dispatch = useDispatch();
 
@@ -28,9 +28,14 @@ const StatCard = ({ stat }) => {
           return response.json();
         })
         .then(fetchedData => {
-          const parsedData = JSON.parse(fetchedData);
-          setPlayerData(parsedData);
-          // dispatch(setPlayerDataStore(parsedData));
+          try {
+            const parsedData = JSON.parse(fetchedData);
+            setPlayerData(parsedData);
+            // dispatch(setPlayerDataStore(parsedData));
+          } catch (error) {
+            console.error('Parsing error:', error);
+            // dispatch(setPlayerDataError(error.message));
+          }
         })
         .catch(error => {
           console.log('Fetch error:', error);
@@ -40,15 +45,17 @@ const StatCard = ({ stat }) => {
           setIsLoading(false);
         });
     }
-  
+
     useEffect(() => {
-        fetchData(stat.Abbreviation);  
+        // fetchData(stat.Abbreviation);  
+        console.log("Playerssss Data", playerData);
     }, []);
   
     useEffect(() => {
       if (playerData.length > 0) {
         console.log("Player 0", playerData[0]?.PLAYER_NAME);
         console.log("Player 1", playerData[1]);
+        console.log("STATTTTT: ", stat)
       }
     }, [playerData])
 
@@ -127,12 +134,12 @@ const StatCard = ({ stat }) => {
 
         <div className="w-full flex items-center justify-center py-5 text-sm font-light tracking-wide border-t-[.5px] border-zinc-700 ">
           {
-            !isLoading && playerData?.length > 0 && (
+            playerData?.length > 0 && (
               <Link to={{
                 pathname: `/nba/stats/players/${stat?.Abbreviation}`,
                
               }}>
-                  <a className="hover:underline  hover:underline-offset-1  cursor-pointer hover:scale-105 hover:duration-200 hover:text-blue-500 active:text-blue-400 ">Complete {stat.Stat} Per Game</a>
+                  <span className="hover:underline  hover:underline-offset-1  cursor-pointer hover:scale-105 hover:duration-200 hover:text-blue-500 active:text-blue-400 ">Complete {stat.Stat} Per Game</span>
               </Link>
           )}
         </div>

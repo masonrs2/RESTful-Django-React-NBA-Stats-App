@@ -25,18 +25,13 @@ const CompletePlayerOrTeamStatsTable = () => {
     setIsLoading(true);
   
     let endpoint = tableType.slice(0, -1);
-
-    console.log("endpoint: ", endpoint)
-    
+  
     if (endpoint === "team" && statType === "PPG") {
       statType = 'PTS'
     }
-    console.log("statType**: ", statType)
     const url = `http://127.0.0.1:8000/api/${endpoint}LeadingStats?stat=${statType}`
-    
+  
     if (url) {
-      console.log("url: ", url)
-
       fetch(url)
       .then(response => {
         if(!response.ok) {
@@ -45,13 +40,7 @@ const CompletePlayerOrTeamStatsTable = () => {
         return response.json();
       })
       .then(fetchedData => {
-        if(endpoint === "team") {
-          setCompletePlayerOrTeamData(fetchedData)
-        } else  {
-          const parsedData = JSON.parse(fetchedData);
-          setCompletePlayerOrTeamData(parsedData);  
-        }
-        
+        setCompletePlayerOrTeamData(fetchedData);
       })
       .catch(error => {
         console.log('Fetch error:', error);
@@ -59,8 +48,7 @@ const CompletePlayerOrTeamStatsTable = () => {
       .finally(() => {
         setIsLoading(false);
       });
-      }
-    
+    }
   }
 
   useEffect(() => {

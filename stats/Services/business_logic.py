@@ -6,12 +6,9 @@ import pandas as pd
 
 def GetPlayerStats(season, sort_by):
     df = GetPlayerStatsDf(season)
-
-    # might need to abstract these 2 lines into another function since there may be times where we need to sort by ascending order
     df_sorted = df.sort_values(by=[sort_by], ascending=False)
-    sorted_json = df_sorted.to_json(orient='records')
-
-    return sorted_json
+    sorted_dict = df_sorted.to_dict(orient='records')
+    return sorted_dict
 
 def GetPlayerStatsDf(season):
     player_stats = leaguedashplayerstats.LeagueDashPlayerStats(season=season)
