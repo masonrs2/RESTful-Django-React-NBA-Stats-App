@@ -234,6 +234,58 @@ def GetLeadingTeamStats(request, stat: str = "PTS", season: str = "2023-24"):
     except Exception as e:
         print("An error occurred:", e)
         raise HttpError(500,"Invalid Query Parameter Passed.")
+    
+@api.get("/leadingTeamsForEachStat")
+def leadingTeamsForEachStat(request, season: str = "2023-24"):
+    try:
+        if not re.match(r"\d{4}-\d{2}", season):
+            return JsonResponse({'error': 'Invalid season format. It should be YYYY-YY.'}, status=400)
+        
+        nba_teams = teams.get_teams()
+        gamefinder = leaguegamefinder.LeagueGameFinder()
+        games = gamefinder.get_data_frames()[0]  # Moved outside the loop
+        result = []
+
+        for stat in valid_team_stats:
+            team_stats_list = []
+            # Loop through all teams and get their game logs
+            for team in nba_teams:
+                team_id = team['id']
+                team_name = team['full_name']
+                
+                season_id = "2" + season.split("-")[0]  # replace with the season id you want to filter by
+                filtered_games = games.loc[(games['SEASON_ID'] == season_id) & (games['TEAM_ID'] == team_id)]
+                team_total_stats = {
+                    "TEAM_ID": team_id,
+                    "TEAM_NAME": team_name,
+                    "TEAM_ABBREVIATION": team['abbreviation'],
+                    "PTS": int(filtered_games['PTS'].sum()),
+                    "STL": int(filtered_games['STL'].sum()),
+                    "BLK": int(filtered_games['BLK'].sum()),
+                    "REB": int(filtered_games['REB'].sum()),
+                    "AST": int(filtered_games['AST'].sum()),
+                    "FGM": int(filtered_games['FGM'].sum()),
+                    "FGA": int(filtered_games['FGA'].sum()),
+                    "FG3M": int(filtered_games['FG3M'].sum()),
+                    "FG3A": int(filtered_games['FG3A'].sum()),
+                    "FTM": int(filtered_games['FTM'].sum()),
+                    "FTA": int(filtered_games['FTA'].sum()),
+                    "TOV": int(filtered_games['TOV'].sum()),
+                    "GP": len(filtered_games),
+                    "PPG": int(filtered_games['PTS'].sum()) / len(filtered_games) if len(filtered_games) > 0 else 0
+                }
+                team_stats_list.append(team_total_stats)
+                
+            team_stats_list = sorted(team_stats_list, key=lambda k: k[stat], reverse=True)
+            result.append({
+                'stat': stat,
+                'data': team_stats_list
+            })
+
+        return JsonResponse(result, safe=False)
+    except Exception as e:
+        print("An error occurred:", e)
+        raise HttpError(500,"Invalid Query Parameter Passed.")
 
 @api.get("/fantasyStats")
 def GetFantasyStats(request):

@@ -62,6 +62,7 @@ export const LeadingTeamStats = [
 
 ];
 export const CompleteLeadingTeamStats = [
+  { Abbreviation: "Team Name", Stat: "Team Name" },
   { Abbreviation: "PPG", Stat: "Points" },
   { Abbreviation: "REB", Stat: "Rebounds" },
   { Abbreviation: "BLK", Stat: "Blocks" },

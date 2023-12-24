@@ -35,7 +35,7 @@ const CompleteTeamStatsTable = ({ stat, completeTeamData, endpoint }) => {
                       {
                         CompleteLeadingTeamStats.map((statType, idx) => (
                           idx === 0 
-                          ? (<TableCell className="flex-1">
+                          ? (<TableCell key={idx} className="flex-1">
                                 <p className="flex gap-4 items-center font-medium w-[230px]">
                                   {team?.TEAM_NAME}
                                   <div className="flex flex-row gap-1 font-light text-xw  text-zinc-300">
@@ -44,7 +44,7 @@ const CompleteTeamStatsTable = ({ stat, completeTeamData, endpoint }) => {
                                 </p>
                               </TableCell>
                             )
-                          : (<TableCell key={idx} className="flex-1">{stat.IsDecimal ? (team[statType.Abbreviation] ? team[statType.Abbreviation].toFixed(1) : '') : team[statType.Abbreviation] || 'n/a'}</TableCell>)
+                          : (<TableCell key={idx} className="flex-1">{stat.IsDecimal ? (team[statType.Abbreviation]? team[statType.Abbreviation].toFixed(1) : '') : (statType.Abbreviation == "PPG" ? team[statType.Abbreviation].toFixed(1) : team[statType.Abbreviation]) || 'n/a'}</TableCell>)
                         ))
                       }
                     </TableRow>

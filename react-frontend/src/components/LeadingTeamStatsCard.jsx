@@ -12,49 +12,41 @@ import { Link } from "react-router-dom"
 import { useDispatch } from "react-redux";
 import { setPlayerDataStore, setPlayerDataError } from "../redux/playerDataSlice";
 
-const LeadingTeamStatsCard = ({ stat }) => {
-    const [teamData, setTeamData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+const LeadingTeamStatsCard = ({ stat, isLoading, teamData }) => {
+    // const [teamData, setTeamData] = useState([]);
     // const dispatch = useDispatch();
 
-    const fetchData = (statType) => {
-        if (statType == "PPG") statType = "PTS"
-      setIsLoading(true);
-      fetch(`http://127.0.0.1:8000/api/teamLeadingStats?stat=${statType}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(fetchedData => {
-            console.log("fetchedData: ", fetchedData)
+    // const fetchData = (statType) => {
+    //     if (statType == "PPG") statType = "PTS"
+    //   setIsLoading(true);
+    //   fetch(`http://127.0.0.1:8000/api/teamLeadingStats?stat=${statType}`)
+    //     .then(response => {
+    //       if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //       }
+    //       return response.json();
+    //     })
+    //     .then(fetchedData => {
+    //         console.log("fetchedData: ", fetchedData)
           
-          setTeamData(fetchedData);
-          // dispatch(setPlayerDataStore(parsedData));
-        })
-        .catch(error => {
-          console.log('Fetch error:', error);
-          // dispatch(setPlayerDataError(error.message));
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
+    //       setTeamData(fetchedData);
+    //       // dispatch(setPlayerDataStore(parsedData));
+    //     })
+    //     .catch(error => {
+    //       console.log('Fetch error:', error);
+    //       // dispatch(setPlayerDataError(error.message));
+    //     })
+    //     .finally(() => {
+    //       setIsLoading(false);
+    //     });
+    // }
   
     useEffect(() => {
-        fetchData(stat.Abbreviation); 
+        // fetchData(stat.Abbreviation); 
         console.log("TEAM DATA: ", teamData) 
         console.log("STAT: ", stat.Abbreviation)
     }, []);
   
-    // useEffect(() => {
-    //   if (teamData.length > 0) {
-    //     console.log("Player 0", teamData[0].PLAYER_NAME);
-    //     console.log("Player 1", teamData[1]);
-    //   }
-    // }, [teamData])
-
   return (
     isLoading ? (<div>Loading...</div>) :
     <div className="flex flex-col text-zinc-400 font-medium bg-zinc-900 outline outline-[.5px] outline-gray-500 m-4">
@@ -85,7 +77,7 @@ const LeadingTeamStatsCard = ({ stat }) => {
                     <div className="flex flex-col px-2 text-2xl items-center text-right">
                     {teamData.length > 0 && teamData[0][stat.Abbreviation] && 
                         <p className="text-right w-full">
-                        {stat.Abbreviation === 'PPG' ? teamData[0][stat.Abbreviation].toFixed(1) : (teamData[0][stat.Abbreviation] / teamData[0]["GP"]).toFixed(1)}
+                        {stat.Abbreviation === 'PPG' ? teamData[0][stat.Abbreviation]?.toFixed(1) : (teamData[0][stat.Abbreviation] / teamData[0]["GP"])?.toFixed(1)}
                         </p>
                     }
                     <p className="font-light text-xs text-right w-full">{stat?.Abbreviation.slice(0,1)}PG</p>
@@ -116,8 +108,8 @@ const LeadingTeamStatsCard = ({ stat }) => {
                     </TableCell>
                     <TableCell className="font-light ">
                         {stat.Abbreviation === "PPG" 
-                            ? player[stat.Abbreviation].toFixed(1) 
-                            : (player[stat.Abbreviation] / player?.GP).toFixed(1)
+                            ? player[stat.Abbreviation]?.toFixed(1) 
+                            : (player[stat.Abbreviation] / player?.GP)?.toFixed(1)
                         }
                     </TableCell>
                 </TableRow>
