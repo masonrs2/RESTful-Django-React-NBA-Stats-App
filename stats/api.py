@@ -329,6 +329,7 @@ def GetBoxScore(request, gameId: str):
         print("An error occurred:", e)
         raise HttpError(500,"Invalid Query Parameter Passed.")
 
+# Example: curl 'http://127.0.0.1:8000/api/1?date=2023-12-11'
 @api.get("/schedule")
 def GetNBASchedule(request, date: Optional[str] = None): 
     try:

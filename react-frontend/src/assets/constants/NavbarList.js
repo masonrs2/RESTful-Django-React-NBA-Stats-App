@@ -8,8 +8,8 @@ export const NavbarList = [
         "path": "/nba/news",
     },
     {
-        "name": "Services",
-        "path": "/nba/stats/teams/PTS",
+        "name": "Schedule",
+        "path": "/nba/schedule",
     },
     {
         "name": "About",
