@@ -297,7 +297,7 @@ def GetFantasyStats(request):
         # Get the data
         data_frames = fw.get_data_frames()
 
-        # data_frames is a list of pandas DataFrames. You can access individual DataFrames like this:
+        # data_fraisLoading ? (<div>Loading...</div>) :mes is a list of pandas DataFrames. You can access individual DataFrames like this:
         df0 = data_frames[0]
         return df0.to_json(orient='records')
     

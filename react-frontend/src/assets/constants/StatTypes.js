@@ -95,6 +95,23 @@ export const CompleteStatTypes = [
   { Stat: "MIN", IsDecimal: true },
 ]
 
+export const FantasyStatsTypes = [
+  { Stat: "PLAYER_NAME", Name: "PLAYER NAME", IsDecimal: false },
+  { Stat: "GP", IsDecimal: false, Name: "GP", },
+  { Stat: "NBA_FANTASY_PTS", Name: "FANTASY PTS", IsDecimal: true },
+  { Stat: "FAN_DUEL_PTS", Name: "FANDUEL PTS", IsDecimal: true },
+  { Stat: "REB", Name: "REB", IsDecimal: false },
+  { Stat: "AST", Name: "AST", IsDecimal: false },
+  { Stat: "STL", Name: "STL", IsDecimal: false },
+  { Stat: "BLK", Name: "BLK", IsDecimal: false },
+  { Stat: "FTA", Name: "FTA", IsDecimal: false },
+  { Stat: "FT_PCT", Name: "FT PCT", IsDecimal: true },
+  { Stat: "FG3M", Name: "FG3M", IsDecimal: false },
+  { Stat: "TOV", Name: "TOV", IsDecimal: false },
+  { Stat: "MIN", Name: "MIN", IsDecimal: true },
+
+]
+
 export const GetStatName = (stat) => {
   const statObject = LeadingStats.find((s) => s.Abbreviation === stat);
   return statObject ? statObject.Stat : stat;
