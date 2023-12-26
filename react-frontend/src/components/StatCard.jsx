@@ -75,7 +75,7 @@ const StatCard = ({ stat, playerData }) => {
                         <img className="object-cover" src={getTeamLogo(playerData[0]?.TEAM_ABBREVIATION)} alt={playerData[0]?.TEAM_ABBREVIATION} />
                         </div>
                         <div className="rounded-full overflow-hidden flex items-center">
-                        <TfiUser height={20} width={20} className="object-cover h-9 w-9" src={getTeamLogo(playerData[0]?.TEAM_ABBREVIATION)} alt={playerData[0]?.TEAM_ABBREVIATION} />
+                          <TfiUser height={20} width={20} className="object-cover h-9 w-9" src={getTeamLogo(playerData[0]?.TEAM_ABBREVIATION)} alt={playerData[0]?.TEAM_ABBREVIATION} />
                         </div>
                     </div>
                     </TableCell>
