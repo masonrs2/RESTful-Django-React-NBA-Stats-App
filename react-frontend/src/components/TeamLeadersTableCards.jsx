@@ -9,7 +9,7 @@ const TeamLeadersTableCards = () => {
   const fetchAllTeamLeadingStatsData = () => {
     setIsLoading(true);
     try {
-      fetch('http://127.0.0.1:8000/api/leadingTeamsForEachStat')
+      fetch('https://nba-stats-backend-production.up.railway.app/api/leadingTeamsForEachStat')
         .then(response => {
           if(!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

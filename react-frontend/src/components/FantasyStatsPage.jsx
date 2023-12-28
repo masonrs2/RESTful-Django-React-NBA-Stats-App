@@ -18,7 +18,7 @@ const FantasyStatsPage = () => {
     try {
       if(true) {
         setIsLoading(true)
-        fetch(`http://127.0.0.1:8000/api/fantasyStats`)
+        fetch(`https://nba-stats-backend-production.up.railway.app/api/fantasyStats`)
           .then(res => res.json())
           .then(data => {
             console.log("data: ", JSON.parse(data))

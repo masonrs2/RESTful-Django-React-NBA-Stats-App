@@ -29,6 +29,7 @@ function App() {
             <Route exact path="/nba/news" element={<NbaNews />} />
             <Route exact path="/login" element={<SignIn />} />
             <Route exact path="/nba/stats/fantasy" element={<FantasyStatsPage />} />
+            <Route exact path="/nba/schedule" element={<GameSchedule />} />
             <Route exact path="/register" element={<SignUp />} />
               <Route path="/" element={
                 <>

@@ -6,7 +6,7 @@ export const Card = ({ Player, Index, Stat }) => {
   const [playerData, setPlayerData] = useState([]);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/leadingPoints?season=2012-13')
+    fetch('https://nba-stats-backend-production.up.railway.app/api/leadingPoints?season=2012-13')
     .then(response => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

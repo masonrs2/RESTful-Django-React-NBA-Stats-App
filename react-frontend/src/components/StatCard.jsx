@@ -20,7 +20,7 @@ const StatCard = ({ stat, playerData }) => {
 
     const fetchData = (stat) => {
       setIsLoading(true);
-      fetch(`http://127.0.0.1:8000/api/playerLeadingStats?stat=${stat}`)
+      fetch(`https://nba-stats-backend-production.up.railway.app/api/playerLeadingStats?stat=${stat}`)
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

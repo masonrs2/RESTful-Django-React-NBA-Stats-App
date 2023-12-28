@@ -28,7 +28,7 @@ const GameSchedule = () => {
       if(selectedLocalDate) {
         console.log(typeof selectedLocalDate)
         setIsLoading(true)
-        fetch(`http://127.0.0.1:8000/api/schedule?date=${selectedLocalDate}`)
+        fetch(`https://nba-stats-backend-production.up.railway.app/api/schedule?date=${selectedLocalDate}`)
           .then(res => res.json())
           .then(data => {
             console.log("data: ", JSON.parse(data))
@@ -99,7 +99,7 @@ const GameSchedule = () => {
             <div className="mt-2">
               {
                 todaysDate && (
-                  <h1 className="px-4 text-gray-400 text-lg pb-2 border-b-[.5px] border-zinc-700  hover:bg-zinc-800/60" >{todaysDate}</h1>
+                  <h1 className="px-4 text-gray-400 text-lg pb-2 border-b-[.5px] border-zinc-700" >{todaysDate}</h1>
                 )
               }
             </div>
@@ -118,7 +118,7 @@ const GameSchedule = () => {
               <TableBody>
                 {
                   scheduleData && scheduleData.map((game,index) => (
-                    <TableRow key={index} className="outline outline-gray-500 outline-[.5px] cursor-pointer hover:bg-zinc-800">
+                    <TableRow key={index} className="outline outline-gray-500 outline-[.5px] hover:bg-zinc-800">
                       <TableCell className="flex gap-2 text-gray-400 items-center" >
                         <div className="rounded-full overflow-hidden flex items-center">
                           <img
@@ -126,7 +126,7 @@ const GameSchedule = () => {
                             src={getTeamLogo(game?.VISITOR_TEAM_NAME?.abbreviation)} 
                           />
                         </div>
-                        {game?.HOME_TEAM_NAME?.nickname}
+                        {game?.VISITOR_TEAM_NAME?.nickname}
                       </TableCell>
                       <TableCell className="">
                         <div className=" flex gap-2 text-gray-400 items-center">

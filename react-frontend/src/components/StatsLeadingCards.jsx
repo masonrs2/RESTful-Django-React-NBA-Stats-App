@@ -9,7 +9,7 @@ export const StatsLeadingCards = () => {
   const fetchAllPlayerLeadingStatsData = () => {
     setIsLoading(true);
     try {
-      fetch('http://127.0.0.1:8000/api/leadingPlayersForEachStat')
+      fetch('https://nba-stats-backend-production.up.railway.app/api/leadingPlayersForEachStat')
         .then(response => {
           if(!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
